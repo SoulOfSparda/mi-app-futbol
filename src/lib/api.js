@@ -105,53 +105,83 @@ export async function getEventsByRound(leagueId, round, season) {
 async function findCurrentRounds(leagueId, season, totalRounds) {
   let roundsToCheck = [];
   if (leagueId === '4480') {
-    roundsToCheck = [400, 200, 160, 150, 125];
+    // Añadimos posibles IDs de torneos eliminatorios. (Eliminamos 400 que es ronda clasificatoria).
+    roundsToCheck = [200, 160, 150, 125, 100, 90, 80, 60, 50];
     for (let i = totalRounds; i >= 1; i--) roundsToCheck.push(i);
   } else {
     for (let i = totalRounds; i >= 1; i--) roundsToCheck.push(i);
   }
 
+  let validRoundsFound = [];
+
+  // Recorremos buscando las rondas que EXISTAN realmente y contengan información
   for (let i = 0; i < roundsToCheck.length; i++) {
     const r = roundsToCheck[i];
     try {
       const events = await getEventsByRound(leagueId, r, season);
       if (!events.length) continue;
 
-      const played = events.filter((e) => e.intHomeScore !== null);
-      const unplayed = events.filter((e) => e.intHomeScore === null);
-
-      // Si la ronda está a medias, esa es la actual (sirve para Last y Next)
-      if (played.length > 0 && unplayed.length > 0) {
-        return {
-          prevRound: i < roundsToCheck.length - 1 ? roundsToCheck[i + 1] : r,
-          lastPlayedRound: r,
-          nextRound: r,
-          nextNextRound: i > 0 ? roundsToCheck[i - 1] : r,
-        };
+      // Ignorar rondas clasificatorias previas a septiembre (para no mostrar partidos de Julio/Agosto)
+      if (events[0].dateEvent) {
+        const year = season.substring(0, 4);
+        if (events[0].dateEvent < `${year}-09-01`) {
+          continue;
+        }
       }
 
-      // Si todos están jugados, terminamos esa ronda
-      if (played.length > 0 && unplayed.length === 0) {
-        return {
-          prevRound: i < roundsToCheck.length - 1 ? roundsToCheck[i + 1] : r,
-          lastPlayedRound: r,
-          nextRound: i > 0 ? roundsToCheck[i - 1] : r,
-          nextNextRound: i > 1 ? roundsToCheck[i - 2] : (i > 0 ? roundsToCheck[i - 1] : r),
-        };
-      }
+      validRoundsFound.push({
+        r,
+        played: events.some((e) => e.intHomeScore !== null),
+        unplayed: events.some((e) => e.intHomeScore === null),
+      });
+
+      // Detener búsqueda tras encontrar suficiente historial
+      if (validRoundsFound.length >= 6) break;
     } catch {
       continue;
     }
   }
 
-  // Fallback seguro al inicio de temporada
-  const lastIdx = roundsToCheck.length - 1;
-  return {
-    prevRound: roundsToCheck[lastIdx],
-    lastPlayedRound: roundsToCheck[lastIdx],
-    nextRound: roundsToCheck[lastIdx],
-    nextNextRound: roundsToCheck.length > 1 ? roundsToCheck[lastIdx - 1] : roundsToCheck[lastIdx],
-  };
+  // Por si no encontramos nada
+  if (validRoundsFound.length === 0) {
+    return { lastPlayedRound: 1, prevRound: 1, nextRound: 1, nextNextRound: 1 };
+  }
+
+  // validRoundsFound está ordenado de más reciente a más antiguo cronológicamente
+  const lastPlayedIdx = validRoundsFound.findIndex((v) => v.played);
+
+  if (lastPlayedIdx !== -1) {
+    // Si la ronda a medias tiene unplayed, también es nextRound
+    const roundHasUnplayed = validRoundsFound[lastPlayedIdx].unplayed;
+    
+    const lastPlayedRound = validRoundsFound[lastPlayedIdx].r;
+    const prevRound = validRoundsFound[lastPlayedIdx + 1]
+      ? validRoundsFound[lastPlayedIdx + 1].r
+      : lastPlayedRound;
+
+    let nextRound, nextNextRound;
+
+    if (roundHasUnplayed) {
+      nextRound = lastPlayedRound;
+      nextNextRound = lastPlayedIdx > 0 ? validRoundsFound[lastPlayedIdx - 1].r : nextRound;
+    } else {
+      nextRound = lastPlayedIdx > 0 ? validRoundsFound[lastPlayedIdx - 1].r : lastPlayedRound;
+      // nextNextRound es la ronda previa a nextRound en el array
+      nextNextRound = lastPlayedIdx > 1 ? validRoundsFound[lastPlayedIdx - 2].r : nextRound;
+    }
+
+    return { lastPlayedRound, prevRound, nextRound, nextNextRound };
+  } else {
+    // Ningún partido jugado aún en toda la temporada (ej. inicio de septiembre)
+    const latestRoundIdx = validRoundsFound.length - 1;
+    const r = validRoundsFound[latestRoundIdx].r;
+    return {
+      lastPlayedRound: r,
+      prevRound: r,
+      nextRound: r,
+      nextNextRound: validRoundsFound.length > 1 ? validRoundsFound[latestRoundIdx - 1].r : r,
+    };
+  }
 }
 
 export async function getLastLeagueEvents(league) {
