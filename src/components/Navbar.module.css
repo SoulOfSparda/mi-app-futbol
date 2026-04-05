@@ -50,10 +50,21 @@
   background-clip: text;
 }
 
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
 .links {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
 }
 
 .link {

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import SearchBar from './SearchBar';
 import styles from './Navbar.module.css';
 
 const navLinks = [
@@ -24,20 +25,26 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <ul className={styles.links}>
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={`${styles.link} ${
-                  pathname === link.href ? styles.active : ''
-                }`}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className={styles.navRight}>
+          <ul className={styles.links}>
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={`${styles.link} ${
+                    pathname === link.href ? styles.active : ''
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          
+          <div className={styles.searchContainer}>
+            <SearchBar />
+          </div>
+        </div>
       </div>
     </nav>
   );
