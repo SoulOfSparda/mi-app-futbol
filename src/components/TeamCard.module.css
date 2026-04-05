@@ -1,0 +1,92 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px color-mix(in srgb, var(--team-color-1) 20%, transparent);
+  border-color: color-mix(in srgb, var(--team-color-1) 40%, transparent);
+}
+
+.glowOverlay {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--team-color-1) 8%, transparent) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-slow);
+  pointer-events: none;
+}
+
+.card:hover .glowOverlay {
+  opacity: 1;
+}
+
+.badgeWrap {
+  width: 72px;
+  height: 72px;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  transition: transform var(--transition-spring);
+}
+
+.card:hover .badgeWrap {
+  transform: scale(1.1);
+}
+
+.name {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
+  transition: color var(--transition-fast);
+}
+
+.card:hover .name {
+  color: var(--accent-primary);
+}
+
+.stadium {
+  position: relative;
+  z-index: 1;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.arrow {
+  position: absolute;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.card:hover .arrow {
+  opacity: 1;
+  transform: translateX(0);
+}

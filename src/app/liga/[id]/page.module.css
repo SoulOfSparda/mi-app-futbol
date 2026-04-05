@@ -1,0 +1,78 @@
+.header {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: var(--space-2xl);
+}
+
+.headerBg {
+  position: absolute;
+  inset: 0;
+}
+
+.headerBg img {
+  filter: brightness(0.4) saturate(1.2);
+}
+
+.headerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    rgba(10, 14, 23, 0.6) 50%,
+    rgba(10, 14, 23, 0.3) 100%
+  );
+}
+
+.headerContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.leagueBadge {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.5));
+}
+
+.leagueTitle {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.leagueDesc {
+  max-width: 600px;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.matchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-lg);
+}
+
+.teamsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .header {
+    min-height: 280px;
+  }
+
+  .matchGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .teamsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}

@@ -1,66 +1,155 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from 'next/link';
+import {
+  LEAGUES,
+  getStandings,
+  getLastLeagueEvents,
+  getNextLeagueEvents,
+} from '@/lib/api';
+import MatchCard from '@/components/MatchCard';
+import StandingsTable from '@/components/StandingsTable';
+import styles from './page.module.css';
 
-export default function Home() {
+export default async function HomePage() {
+  const [
+    betplayStandings,
+    premierStandings,
+    betplayLastEvents,
+    premierLastEvents,
+    betplayNextEvents,
+    premierNextEvents,
+  ] = await Promise.all([
+    getStandings(LEAGUES.betplay.id, LEAGUES.betplay.season).catch(() => []),
+    getStandings(LEAGUES.premier.id, LEAGUES.premier.season).catch(() => []),
+    getLastLeagueEvents(LEAGUES.betplay).catch(() => []),
+    getLastLeagueEvents(LEAGUES.premier).catch(() => []),
+    getNextLeagueEvents(LEAGUES.betplay).catch(() => []),
+    getNextLeagueEvents(LEAGUES.premier).catch(() => []),
+  ]);
+
+  const lastEvents = [
+    ...betplayLastEvents.slice(0, 5),
+    ...premierLastEvents.slice(0, 5),
+  ];
+
+  const nextEvents = [
+    ...betplayNextEvents.slice(0, 5),
+    ...premierNextEvents.slice(0, 5),
+  ];
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        <div className={styles.heroGlow} />
+        <div className={`container ${styles.heroContent}`}>
+          <div className={styles.heroBadge}>
+            <span className="badge">⚡ En vivo con TheSportsDB</span>
+          </div>
+          <h1 className={`${styles.heroTitle} animate-in`}>
+            Mi<span className="accent-text">Futbolito</span>Fc
+          </h1>
+          <p className={`${styles.heroSub} animate-in animate-in-delay-1`}>
+            Resultados, posiciones, equipos y jugadores de la Liga BetPlay y la
+            Premier League. Todo en un solo lugar.
           </p>
+          <div className={`${styles.heroActions} animate-in animate-in-delay-2`}>
+            <Link href="/liga/betplay" className={styles.btnPrimary} id="hero-btn-betplay">
+              🇨🇴 Liga BetPlay
+            </Link>
+            <Link href="/liga/premier" className={styles.btnSecondary} id="hero-btn-premier">
+              🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League
+            </Link>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Últimos Resultados */}
+      {lastEvents.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-title">
+              <h2>Últimos Resultados</h2>
+            </div>
+            <div className={styles.matchGrid}>
+              {lastEvents.map((event, i) => (
+                <div
+                  key={event.idEvent}
+                  style={{ animationDelay: `${i * 80}ms` }}
+                >
+                  <MatchCard event={event} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Próximos Partidos */}
+      {nextEvents.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-title">
+              <h2>Próximos Partidos</h2>
+            </div>
+            <div className={styles.matchGrid}>
+              {nextEvents.map((event, i) => (
+                <div
+                  key={event.idEvent}
+                  style={{ animationDelay: `${i * 80}ms` }}
+                >
+                  <MatchCard event={event} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Tablas de Posiciones */}
+      <section className="section">
+        <div className="container">
+          <div className="section-title">
+            <h2>Tablas de Posiciones</h2>
+          </div>
+          <div className={styles.standingsGrid}>
+            {/* BetPlay */}
+            <div className={`${styles.standingsBlock} animate-in`}>
+              <div className={styles.standingsHeader}>
+                <h3>🇨🇴 Liga BetPlay</h3>
+                <Link href="/liga/betplay" className={styles.viewAll}>
+                  Ver completa →
+                </Link>
+              </div>
+              {betplayStandings.length > 0 ? (
+                <StandingsTable standings={betplayStandings} compact />
+              ) : (
+                <p className={styles.noData}>
+                  Tabla no disponible en este momento.
+                </p>
+              )}
+            </div>
+
+            {/* Premier League */}
+            <div
+              className={`${styles.standingsBlock} animate-in animate-in-delay-2`}
+            >
+              <div className={styles.standingsHeader}>
+                <h3>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</h3>
+                <Link href="/liga/premier" className={styles.viewAll}>
+                  Ver completa →
+                </Link>
+              </div>
+              {premierStandings.length > 0 ? (
+                <StandingsTable standings={premierStandings} compact />
+              ) : (
+                <p className={styles.noData}>
+                  Tabla no disponible en este momento.
+                </p>
+              )}
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }

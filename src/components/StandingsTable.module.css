@@ -1,0 +1,151 @@
+.wrapper {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table thead {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.table th {
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.thTeam {
+  text-align: left !important;
+  min-width: 180px;
+}
+
+.thPos {
+  width: 40px;
+}
+
+.thStat {
+  width: 44px;
+}
+
+.thPts {
+  width: 52px;
+}
+
+.row {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: background var(--transition-fast);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rowTop {
+  border-left: 2px solid var(--accent-primary);
+}
+
+.rowBottom {
+  border-left: 2px solid #e63946;
+}
+
+.pos {
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.posNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.posTop {
+  background: rgba(0, 242, 96, 0.12);
+  color: var(--accent-primary);
+}
+
+.posBottom {
+  background: rgba(230, 57, 70, 0.12);
+  color: #e63946;
+}
+
+.teamCell {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.teamLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  transition: color var(--transition-fast);
+}
+
+.teamLink:hover {
+  color: var(--accent-primary);
+}
+
+.teamName {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat {
+  text-align: center;
+  padding: var(--space-sm) var(--space-sm);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.pts {
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .thTeam {
+    min-width: 140px;
+  }
+
+  .table th,
+  .stat,
+  .pts {
+    padding: var(--space-xs) var(--space-xs);
+  }
+
+  .teamCell {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}

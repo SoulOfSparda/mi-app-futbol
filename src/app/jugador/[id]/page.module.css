@@ -1,0 +1,155 @@
+.hero {
+  position: relative;
+  min-height: 480px;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: var(--space-2xl);
+  overflow: hidden;
+}
+
+.heroBg {
+  position: absolute;
+  inset: 0;
+}
+
+.heroBg img {
+  filter: brightness(0.3) saturate(1.2) blur(2px);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--bg-primary) 0%,
+    rgba(10, 14, 23, 0.7) 40%,
+    rgba(10, 14, 23, 0.3) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-xl);
+}
+
+.cutout {
+  position: relative;
+  flex-shrink: 0;
+  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.6));
+}
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  position: relative;
+}
+
+.heroNumber {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.06);
+  position: absolute;
+  top: -70px;
+  left: -10px;
+}
+
+.playerName {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.teamLink {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.teamAnchor {
+  color: var(--accent-primary);
+  font-weight: 600;
+  transition: opacity var(--transition-fast);
+}
+
+.teamAnchor:hover {
+  opacity: 0.7;
+}
+
+/* Stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-md);
+}
+
+.statCard {
+  padding: var(--space-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  transition: border-color var(--transition-fast);
+}
+
+.statCard:hover {
+  border-color: var(--glass-border);
+}
+
+.statLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Bio */
+.bioCard {
+  padding: var(--space-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.bio {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-width: none;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 380px;
+  }
+
+  .heroContent {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cutout {
+    display: none;
+  }
+
+  .heroNumber {
+    font-size: 4rem;
+    top: -50px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
