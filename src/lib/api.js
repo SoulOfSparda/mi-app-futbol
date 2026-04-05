@@ -98,13 +98,21 @@ export async function getEventsByRound(leagueId, round, season) {
 }
 
 /**
- * Busca la ronda actual/reciente de una liga.
- * Recorre rondas de atrás hacia adelante buscando la última con resultados.
- * Devuelve { lastPlayedRound, nextRound }
+ * Busca las rondas actuales/recientes de una liga.
+ * Retorna las rondas adyacentes seguras contemplando los saltos de
+ * la Champions League (fases eliminatorias: 125, 150, 160, 200, 400).
  */
 async function findCurrentRounds(leagueId, season, totalRounds) {
-  // Buscamos desde la ronda más alta hacia atrás
-  for (let r = totalRounds; r >= 1; r--) {
+  let roundsToCheck = [];
+  if (leagueId === '4480') {
+    roundsToCheck = [400, 200, 160, 150, 125];
+    for (let i = totalRounds; i >= 1; i--) roundsToCheck.push(i);
+  } else {
+    for (let i = totalRounds; i >= 1; i--) roundsToCheck.push(i);
+  }
+
+  for (let i = 0; i < roundsToCheck.length; i++) {
+    const r = roundsToCheck[i];
     try {
       const events = await getEventsByRound(leagueId, r, season);
       if (!events.length) continue;
@@ -112,73 +120,76 @@ async function findCurrentRounds(leagueId, season, totalRounds) {
       const played = events.filter((e) => e.intHomeScore !== null);
       const unplayed = events.filter((e) => e.intHomeScore === null);
 
-      // Si hay algunos jugados y algunos sin jugar, esta es la ronda actual
+      // Si la ronda está a medias, esa es la actual (sirve para Last y Next)
       if (played.length > 0 && unplayed.length > 0) {
-        return { lastPlayedRound: r, nextRound: r };
+        return {
+          prevRound: i < roundsToCheck.length - 1 ? roundsToCheck[i + 1] : r,
+          lastPlayedRound: r,
+          nextRound: r,
+          nextNextRound: i > 0 ? roundsToCheck[i - 1] : r,
+        };
       }
 
-      // Si todos están jugados, esta fue la última ronda completada
+      // Si todos están jugados, terminamos esa ronda
       if (played.length > 0 && unplayed.length === 0) {
-        return { lastPlayedRound: r, nextRound: Math.min(r + 1, totalRounds) };
+        return {
+          prevRound: i < roundsToCheck.length - 1 ? roundsToCheck[i + 1] : r,
+          lastPlayedRound: r,
+          nextRound: i > 0 ? roundsToCheck[i - 1] : r,
+          nextNextRound: i > 1 ? roundsToCheck[i - 2] : (i > 0 ? roundsToCheck[i - 1] : r),
+        };
       }
     } catch {
       continue;
     }
   }
-  return { lastPlayedRound: 1, nextRound: 1 };
+
+  // Fallback seguro al inicio de temporada
+  const lastIdx = roundsToCheck.length - 1;
+  return {
+    prevRound: roundsToCheck[lastIdx],
+    lastPlayedRound: roundsToCheck[lastIdx],
+    nextRound: roundsToCheck[lastIdx],
+    nextNextRound: roundsToCheck.length > 1 ? roundsToCheck[lastIdx - 1] : roundsToCheck[lastIdx],
+  };
 }
 
-/**
- * Obtiene los últimos resultados de la liga (partidos ya jugados de primera división).
- * Usa eventsround que SÍ devuelve datos correctos de la liga indicada.
- */
 export async function getLastLeagueEvents(league) {
-  const { lastPlayedRound } = await findCurrentRounds(
+  const { lastPlayedRound, prevRound } = await findCurrentRounds(
     league.id,
     league.season,
     league.totalRounds
   );
 
-  // Traemos la ronda actual y la anterior para tener suficientes resultados
-  const [currentRoundEvents, prevRoundEvents] = await Promise.all([
+  const [currentEvents, prevEvents] = await Promise.all([
     getEventsByRound(league.id, lastPlayedRound, league.season).catch(() => []),
-    lastPlayedRound > 1
-      ? getEventsByRound(league.id, lastPlayedRound - 1, league.season).catch(
-          () => []
-        )
+    prevRound !== lastPlayedRound
+      ? getEventsByRound(league.id, prevRound, league.season).catch(() => [])
       : Promise.resolve([]),
   ]);
 
-  // Filtramos solo los ya jugados y ordenamos por fecha DESC
-  const allEvents = [...currentRoundEvents, ...prevRoundEvents]
+  const allEvents = [...currentEvents, ...prevEvents]
     .filter((e) => e.intHomeScore !== null)
     .sort((a, b) => (b.dateEvent || '').localeCompare(a.dateEvent || ''));
 
   return allEvents;
 }
 
-/**
- * Obtiene los próximos partidos de la liga (aún no jugados, primera división).
- */
 export async function getNextLeagueEvents(league) {
-  const { nextRound } = await findCurrentRounds(
+  const { nextRound, nextNextRound } = await findCurrentRounds(
     league.id,
     league.season,
     league.totalRounds
   );
 
-  // Traemos ronda actual y siguiente
-  const [currentRoundEvents, nextRoundEvents] = await Promise.all([
+  const [currentEvents, nextEvents] = await Promise.all([
     getEventsByRound(league.id, nextRound, league.season).catch(() => []),
-    nextRound < league.totalRounds
-      ? getEventsByRound(league.id, nextRound + 1, league.season).catch(
-          () => []
-        )
+    nextNextRound !== nextRound
+      ? getEventsByRound(league.id, nextNextRound, league.season).catch(() => [])
       : Promise.resolve([]),
   ]);
 
-  // Filtramos solo los NO jugados y ordenamos por fecha ASC
-  const allEvents = [...currentRoundEvents, ...nextRoundEvents]
+  const allEvents = [...currentEvents, ...nextEvents]
     .filter((e) => e.intHomeScore === null)
     .sort((a, b) => (a.dateEvent || '').localeCompare(b.dateEvent || ''));
 
