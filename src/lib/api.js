@@ -191,12 +191,15 @@ export async function getTeamDetails(teamId) {
   // Nota: En la API gratuita (key: 3), el endpoint lookupteam.php siempre
   // devuelve los datos del Arsenal ignorando el ID. Para solucionarlo,
   // cargamos los equipos de nuestras ligas y buscamos el que coincida.
-  const [betplayTeams, premierTeams] = await Promise.all([
-    getTeamsByLeague(LEAGUES.betplay.apiName),
-    getTeamsByLeague(LEAGUES.premier.apiName),
-  ]);
-
-  const allTeams = [...betplayTeams, ...premierTeams];
+  
+  // Obtenemos todos los equipos de todas las ligas configuradas
+  const leaguesPromises = Object.values(LEAGUES).map((league) => 
+    getTeamsByLeague(league.apiName)
+  );
+  
+  const allLeaguesTeams = await Promise.all(leaguesPromises);
+  const allTeams = allLeaguesTeams.flat();
+  
   const team = allTeams.find((t) => t.idTeam === teamId.toString());
   
   return team || null;
