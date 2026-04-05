@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/', label: 'Inicio' },
   { href: '/liga/betplay', label: 'Liga BetPlay' },
   { href: '/liga/premier', label: 'Premier League' },
+  { href: '/liga/champions-league', label: 'Champions League' },
 ];
 
 export default function Navbar() {

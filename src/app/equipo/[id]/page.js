@@ -6,6 +6,7 @@ import {
   getTeamPlayers,
   getTeamLastEvents,
   getTeamNextEvents,
+  translateText,
 } from '@/lib/api';
 import MatchCard from '@/components/MatchCard';
 import PlayerCard from '@/components/PlayerCard';
@@ -33,7 +34,11 @@ export default async function TeamPage({ params }) {
   if (!team) notFound();
 
   const color1 = team.strColour1 || '#1a2035';
-  const descES = team.strDescriptionES || team.strDescriptionEN || '';
+  
+  let descES = team.strDescriptionES;
+  if (!descES && team.strDescriptionEN) {
+    descES = await translateText(team.strDescriptionEN);
+  }
 
   return (
     <>

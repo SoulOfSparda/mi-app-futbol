@@ -23,6 +23,14 @@ export const LEAGUES = {
     season: '2025-2026',
     totalRounds: 38,
   },
+  champions: {
+    id: '4480',
+    name: 'Champions League',
+    slug: 'champions-league',
+    apiName: 'UEFA Champions League',
+    season: '2025-2026',
+    totalRounds: 15,
+  },
 };
 
 export function getLeagueBySlug(slug) {
@@ -41,6 +49,24 @@ async function fetchAPI(endpoint) {
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
+}
+
+/**
+ * Traduce texto de inglés a español usando la API gratuita de Google Translate.
+ * Se usa como fallback cuando la API no provee versión en español.
+ */
+export async function translateText(text) {
+  if (!text) return '';
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(text)}`;
+    // Cacheamos la traducción indefinidamente a menos que revalide Next.js
+    const res = await fetch(url, { next: { revalidate: 86400 } });
+    if (!res.ok) return text;
+    const data = await res.json();
+    return data[0].map(item => item[0]).join('');
+  } catch (error) {
+    return text; // Fallback al texto original si falla la traducción
+  }
 }
 
 // --- Teams ---

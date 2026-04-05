@@ -8,6 +8,7 @@ import {
   getLastLeagueEvents,
   getNextLeagueEvents,
   getTeamsByLeague,
+  translateText,
 } from '@/lib/api';
 import StandingsTable from '@/components/StandingsTable';
 import MatchCard from '@/components/MatchCard';
@@ -37,6 +38,11 @@ export default async function LeaguePage({ params }) {
       getNextLeagueEvents(league).catch(() => []),
       getTeamsByLeague(league.apiName).catch(() => []),
     ]);
+
+  let descES = details?.strDescriptionES;
+  if (!descES && details?.strDescriptionEN) {
+    descES = await translateText(details.strDescriptionEN);
+  }
 
   return (
     <>
@@ -70,9 +76,9 @@ export default async function LeaguePage({ params }) {
           <h1 className={`${styles.leagueTitle} animate-in animate-in-delay-1`}>
             {league.name}
           </h1>
-          {(details?.strDescriptionES || details?.strDescriptionEN) && (
+          {descES && (
             <p className={`${styles.leagueDesc} animate-in animate-in-delay-2`}>
-              {(details.strDescriptionES || details.strDescriptionEN).substring(0, 250)}...
+              {descES.substring(0, 250)}...
             </p>
           )}
         </div>

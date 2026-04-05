@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getPlayerDetails } from '@/lib/api';
+import { getPlayerDetails, translateText } from '@/lib/api';
 import styles from './page.module.css';
 
 export async function generateMetadata({ params }) {
@@ -22,7 +22,10 @@ export default async function PlayerPage({ params }) {
 
   const heroImg = player.strFanart1 || player.strThumb || null;
   const cutout = player.strCutout || player.strThumb || null;
-  const descES = player.strDescriptionES || player.strDescriptionEN || '';
+  let descES = player.strDescriptionES;
+  if (!descES && player.strDescriptionEN) {
+    descES = await translateText(player.strDescriptionEN);
+  }
 
   const stats = [
     { label: 'Posición', value: player.strPosition },
