@@ -45,7 +45,7 @@ export default function Leaderboard({ gameId, currentScore, timeElapsed }) {
       {!submitted && currentScore > 0 && (
         <form className={styles.submitScoreBox} onSubmit={handleSubmit}>
           <h3 className={styles.submitTitle}>¡Guarda tu Récord Mundial!</h3>
-          <p className={styles.submitDesc}>Has conseguido <strong>{currentScore}</strong> puntos. Escribe tu nombre para entrar en el ranking de Vercel.</p>
+          <p className={styles.submitDesc}>Has conseguido <strong>{currentScore}</strong> puntos. Escribe tu nombre para entrar al ranking.</p>
           <div className={styles.inputGroup}>
             <input
               type="text"
@@ -67,7 +67,7 @@ export default function Leaderboard({ gameId, currentScore, timeElapsed }) {
       <h3 className={styles.boardTitle}>🏆 Top 10 Mejores Jugadores</h3>
       
       {loading ? (
-        <p className={styles.loading}>Cargando Base de Datos global de Vercel...</p>
+        <p className={styles.loading}>Cargando Ranking Global...</p>
       ) : board.length === 0 ? (
         <p className={styles.empty}>Aún no hay puntuaciones registradas. ¡Sé el primero!</p>
       ) : (
