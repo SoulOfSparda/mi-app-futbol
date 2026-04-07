@@ -8,11 +8,13 @@ import {
   getLastLeagueEvents,
   getNextLeagueEvents,
   getTeamsByLeague,
+  getKnockoutEvents,
   translateText,
 } from '@/lib/api';
 import StandingsTable from '@/components/StandingsTable';
 import MatchCard from '@/components/MatchCard';
 import TeamCard from '@/components/TeamCard';
+import KnockoutBracket from '@/components/KnockoutBracket';
 import styles from './page.module.css';
 
 export async function generateMetadata({ params }) {
@@ -30,13 +32,14 @@ export default async function LeaguePage({ params }) {
   const league = getLeagueBySlug(id);
   if (!league) notFound();
 
-  const [details, standings, lastEvents, nextEvents, teams] =
+  const [details, standings, lastEvents, nextEvents, teams, knockoutEvents] =
     await Promise.all([
       getLeagueDetails(league.id).catch(() => null),
       getStandings(league.id, league.season).catch(() => []),
       getLastLeagueEvents(league).catch(() => []),
       getNextLeagueEvents(league).catch(() => []),
       getTeamsByLeague(league.apiName).catch(() => []),
+      getKnockoutEvents(league.id, league.season).catch(() => ({})),
     ]);
 
   let descES = details?.strDescriptionES;
@@ -128,6 +131,18 @@ export default async function LeaguePage({ params }) {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* Fase Eliminatoria (Sólo Champions) */}
+      {knockoutEvents && Object.keys(knockoutEvents).length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-title">
+              <h2>Fase Eliminatoria</h2>
+            </div>
+            <KnockoutBracket knockoutEvents={knockoutEvents} />
           </div>
         </section>
       )}

@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import styles from './MatchCard.module.css';
 
@@ -5,15 +7,30 @@ export default function MatchCard({ event }) {
   const homeScore = event.intHomeScore;
   const awayScore = event.intAwayScore;
   const isFinished = homeScore !== null && awayScore !== null;
-  const dateStr = event.dateEvent
-    ? new Date(event.dateEvent + 'T00:00:00').toLocaleDateString('es-CO', {
-        day: 'numeric',
-        month: 'short',
-      })
-    : '';
-  const timeStr = event.strTime
-    ? event.strTime.substring(0, 5)
-    : '';
+
+  // Construimos un Date real en UTC con la fecha + hora de la API
+  let dateStr = '';
+  let timeStr = '';
+
+  if (event.dateEvent) {
+    const utcTime = event.strTime ? event.strTime.substring(0, 5) : '00:00';
+    const utcDate = new Date(`${event.dateEvent}T${utcTime}:00Z`);
+
+    // Fecha en el idioma local del navegador (español si el SO está en español)
+    dateStr = utcDate.toLocaleDateString('es', {
+      day: 'numeric',
+      month: 'short',
+    });
+
+    // Hora convertida a la zona horaria local del usuario
+    if (event.strTime && !isFinished) {
+      timeStr = utcDate.toLocaleTimeString('es', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+    }
+  }
 
   return (
     <article className={`${styles.card} animate-in`} id={`match-${event.idEvent}`}>
