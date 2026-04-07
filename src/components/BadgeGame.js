@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
+import Leaderboard from './Leaderboard';
 import styles from './BadgeGame.module.css';
 
 function shuffle(arr) {
@@ -24,6 +25,9 @@ export default function BadgeGame({ teams }) {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(10);
   const [bestScore, setBestScore] = useState(0);
+  
+  const totalTimeSpent = useRef(0);
+  const [finalTime, setFinalTime] = useState(0);
 
   // Generar rondas de juego
   const generateRounds = useCallback(() => {
@@ -61,6 +65,8 @@ export default function BadgeGame({ teams }) {
     setRevealed(false);
     setLoading(false);
     setTimer(10);
+    totalTimeSpent.current = 0;
+    setFinalTime(0);
     setGameState('playing');
   }, [generateRounds]);
 
@@ -72,7 +78,10 @@ export default function BadgeGame({ teams }) {
       setRevealed(true);
       return;
     }
-    const interval = setInterval(() => setTimer((t) => t - 1), 1000);
+    const interval = setInterval(() => {
+      setTimer((t) => t - 1);
+      totalTimeSpent.current += 1;
+    }, 1000);
     return () => clearInterval(interval);
   }, [gameState, timer, showAnswer]);
 
@@ -89,6 +98,7 @@ export default function BadgeGame({ teams }) {
   const nextRound = () => {
     if (currentR + 1 >= rounds.length) {
       setBestScore((b) => Math.max(b, score));
+      setFinalTime(totalTimeSpent.current);
       setGameState('finished');
     } else {
       setLoading(true);
@@ -146,6 +156,8 @@ export default function BadgeGame({ teams }) {
           <button className={styles.startBtn} onClick={startGame}>
             Jugar de Nuevo
           </button>
+
+          <Leaderboard gameId="badge" currentScore={score} timeElapsed={finalTime} />
         </div>
       </div>
     );

@@ -1,0 +1,135 @@
+.boardContainer {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--card-border);
+  width: 100%;
+}
+
+/* Submit Box */
+.submitScoreBox {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: center;
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.submitTitle {
+  font-size: 1.3rem;
+  font-family: var(--font-accent);
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.submitDesc {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+.inputGroup {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.input {
+  flex: 1;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--card-border);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  outline: none;
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: var(--accent-primary);
+}
+
+.submitBtn {
+  background: var(--accent-primary);
+  color: #000;
+  font-weight: bold;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Board Table */
+.boardTitle {
+  font-size: 1.4rem;
+  font-family: var(--font-accent);
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.loading, .empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 2rem 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.table th {
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+  padding: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.table td {
+  padding: 0.8rem 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr.top3 td {
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.rankCol { width: 40px; font-weight: 900; }
+.playerCol { width: 100%; }
+.scoreCol { font-weight: 900; color: var(--accent-primary) !important; text-align: center; }
+.timeCol { text-align: center; opacity: 0.8; }
+
+@media (max-width: 500px) {
+  .inputGroup { flex-direction: column; }
+}

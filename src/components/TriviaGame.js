@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import Leaderboard from './Leaderboard';
 import styles from './TriviaGame.module.css';
 
 const QUESTIONS = [
@@ -201,6 +202,8 @@ export default function TriviaGame() {
           <button className={styles.startBtn} onClick={startGame}>
             Jugar de Nuevo
           </button>
+
+          <Leaderboard gameId="trivia" currentScore={score} />
         </div>
       </div>
     );
