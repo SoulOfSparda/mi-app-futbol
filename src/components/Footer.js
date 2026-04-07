@@ -10,15 +10,17 @@ export default function Footer() {
             ⚽ Mi<span className={styles.accent}>Futbolito</span>Fc
           </span>
           <p className={styles.tagline}>
-            Tu portal de fútbol para la Liga BetPlay y la Premier League.
+            Tu portal de fútbol para la Liga BetPlay, Premier League, Champions y minijuegos.
           </p>
         </div>
 
         <div className={styles.linksGrid}>
           <div className={styles.linkGroup}>
-            <h4 className={styles.groupTitle}>Ligas</h4>
+            <h4 className={styles.groupTitle}>Navegación</h4>
             <Link href="/liga/betplay" className={styles.link}>Liga BetPlay</Link>
             <Link href="/liga/premier" className={styles.link}>Premier League</Link>
+            <Link href="/liga/champions-league" className={styles.link}>Champions League</Link>
+            <Link href="/juegos" className={styles.link}>Minijuegos</Link>
           </div>
           <div className={styles.linkGroup}>
             <h4 className={styles.groupTitle}>Información</h4>

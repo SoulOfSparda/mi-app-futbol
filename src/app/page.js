@@ -57,8 +57,8 @@ export default async function HomePage() {
             Mi<span className="accent-text">Futbolito</span>Fc
           </h1>
           <p className={`${styles.heroSub} animate-in animate-in-delay-1`}>
-            Resultados, posiciones, equipos y jugadores de la Liga BetPlay y la
-            Premier League. Todo en un solo lugar.
+            Resultados, posiciones, equipos y jugadores de la Liga BetPlay,
+            Premier League y Champions League. ¡Ahora con minijuegos y trivias!
           </p>
           <div className={`${styles.heroActions} animate-in animate-in-delay-2`}>
             <Link href="/liga/betplay" className={styles.btnPrimary} id="hero-btn-betplay">

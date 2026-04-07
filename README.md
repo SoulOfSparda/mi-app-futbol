@@ -6,11 +6,16 @@ Este proyecto extrae información en tiempo real desde [TheSportsDB](https://www
 
 ## 🚀 Características Principales
 
-- **Resultados y Próximos Partidos**: Fechas, encuentros y resúmenes de la Champions League, Premier League y Liga BetPlay.
+- **Resultados y Próximos Partidos**: Fechas, encuentros y resúmenes de la Champions League, Premier League y Liga BetPlay (Apertura y Finalización).
+- **Tablas de Posiciones Dinámicas**: Lógica personalizada capaz de armar tablas de 36 equipos para formatos liguilla (como Champions League).
+- **Fase Eliminatoria Interactiva (Bracket)**: Vista de llaves (Playoffs, Octavos, Cuartos) generada y estructurada dinámicamente con agregación de marcadores.
+- **Zona de Minijuegos Gamificada 🎮**: 
+  - *Maestro de Champions*: Trivia histórica con ranking de puntaje basado en rachas.
+  - *Adivina el Escudo*: Desafío contra reloj tipo silueta usando filtros avanzados para adivinar el club.
 - **Detalle de Equipos**: Descripciones dinámicas en español, escudos, uniformes e información de fundación.
 - **Biografía de Jugadores**: Fotografía, dorsal, equipo y detalles físicos de los jugadores de cada equipo.
-- **Tablas de Posiciones**: Revisión rápida del estatus de la liga y rendimiento.
-- **Buscador de Equipos**: Permite descubrir cualquier equipo registrado en el mundo.
+- **Horarios Locales**: El código lee automáticamente la zona horaria de tu computadora para que los partidos se muestren en tu hora local.
+- **Buscador de Equipos Global**: Capacidad anti-error 404 usando fallbacks con listados de plantillas o últimos partidos para encontrar a cualquier escuadra mundial.
 
 ## 🛠 Instalación y Uso Local
 
