@@ -1,6 +1,7 @@
 import { Bebas_Neue, DM_Sans } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const bebasNeue = Bebas_Neue({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main style={{ paddingTop: 'var(--navbar-height)' }}>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
